@@ -45,11 +45,6 @@ return [
             'provider' => 'admin',
             'hash' => false,
         ],
-        'subadmin-api' => [
-            'driver' => 'jwt',
-            'provider' => 'subadmin',
-            'hash' => false,
-        ],
         'member-api' => [
             'driver' => 'jwt',
             'provider' => 'member',
@@ -83,10 +78,6 @@ return [
         'admin' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
-        ],
-        'subadmin' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Subadmin::class,
         ],
         'member' => [
             'driver' => 'eloquent',
