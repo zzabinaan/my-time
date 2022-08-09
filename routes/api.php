@@ -29,10 +29,10 @@ Route::group(['prefix'=>'member'], function($router){
     Route::post('/register',[MemberController::class,'register']);
 });
 Route::group(['middleware'=>['jwt.role:admin','jwt.auth'],'prefix'=>'admin'], function($router){
-    Route::get('/user-profile',[AdminController::class,'userProfile']);
+    Route::get('/profile',[AdminController::class,'userProfile']);
     Route::post('/logout',[AdminController::class,'logout']);
 });
 Route::group(['middleware'=>['jwt.role:member','jwt.auth'],'prefix'=>'member'], function($router){
-    Route::get('/user-profile',[MemberController::class,'userProfile']);
+    Route::get('/profile',[MemberController::class,'userProfile']);
     Route::post('/logout',[MemberController::class,'logout']);
 });
