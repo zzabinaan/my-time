@@ -36,3 +36,21 @@ Route::group(['middleware'=>['jwt.role:member','jwt.auth'],'prefix'=>'member'], 
     Route::get('/profile',[MemberController::class,'userProfile']);
     Route::post('/logout',[MemberController::class,'logout']);
 });
+
+
+
+// Register Admin Input Example:
+// {
+//     "name":"admin",
+//     "email":"admin@admin.com",
+//     "password":"12345678",
+//     "password_confirmation":"12345678"
+// }
+
+// Login Admin Input Example:
+// {
+//     "email":"admin@admin.com",
+//     "password":"12345678"
+// }
+
+// Admin and Member Input Sama kok
