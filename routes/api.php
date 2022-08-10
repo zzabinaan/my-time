@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,38 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['prefix'=>'admin'], function($router){
+    Route::post('/login',[AdminController::class,'login']);
+    Route::post('/register',[AdminController::class,'register']);
+});
+Route::group(['prefix'=>'member'], function($router){
+    Route::post('/login',[MemberController::class,'login']);
+    Route::post('/register',[MemberController::class,'register']);
+});
+Route::group(['middleware'=>['jwt.role:admin','jwt.auth'],'prefix'=>'admin'], function($router){
+    Route::get('/profile',[AdminController::class,'userProfile']);
+    Route::post('/logout',[AdminController::class,'logout']);
+});
+Route::group(['middleware'=>['jwt.role:member','jwt.auth'],'prefix'=>'member'], function($router){
+    Route::get('/profile',[MemberController::class,'userProfile']);
+    Route::post('/logout',[MemberController::class,'logout']);
+});
+
+
+
+// Register Admin Input Example:
+// {
+//     "name":"admin",
+//     "email":"admin@admin.com",
+//     "password":"12345678",
+//     "password_confirmation":"12345678"
+// }
+
+// Login Admin Input Example:
+// {
+//     "email":"admin@admin.com",
+//     "password":"12345678"
+// }
+
+// Admin and Member Input Sama kok
