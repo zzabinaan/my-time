@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +30,15 @@ Route::group(['prefix' => 'member'], function ($router) {
     Route::post('/login', [MemberController::class, 'login']);
     Route::post('/register', [MemberController::class, 'register']);
 });
-Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth'], 'prefix' => 'admin'], function ($router) {
-    Route::get('/profile', [AdminController::class, 'userProfile']);
-    Route::post('/logout', [AdminController::class, 'logout']);
+Route::group(['middleware'=>['jwt.role:admin','jwt.auth'],'prefix'=>'admin'], function($router){
+    Route::get('/profile',[AdminController::class,'userProfile']);
+    Route::post('/logout',[AdminController::class,'logout']);
+    Route::get('/',[ProjectController::class, 'index']);
+    Route::post('/store',[ProjectController::class, 'store']);
+    Route::get('/show/{id}',[ProjectController::class, 'show']);
+    Route::post('/update/{id}',[ProjectController::class, 'update']);
+    Route::get('/destroy/{id}',[ProjectController::class, 'destroy']);
+
 });
 Route::group(['middleware' => ['jwt.role:member', 'jwt.auth'], 'prefix' => 'member'], function ($router) {
     Route::get('/profile', [MemberController::class, 'userProfile']);
