@@ -27,4 +27,7 @@ class Admin extends Authenticatable implements JWTSubject
     {
         return ['role' => 'admin'];
     }
+    public function project(){
+        return $this->hasMany(Project::class);
+    }
 }
