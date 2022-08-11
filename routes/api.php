@@ -33,11 +33,19 @@ Route::group(['prefix' => 'member'], function ($router) {
 Route::group(['middleware'=>['jwt.role:admin','jwt.auth'],'prefix'=>'admin'], function($router){
     Route::get('/profile',[AdminController::class,'userProfile']);
     Route::post('/logout',[AdminController::class,'logout']);
-    Route::get('/',[ProjectController::class, 'index']);
-    Route::post('/store',[ProjectController::class, 'store']);
-    Route::get('/show/{id}',[ProjectController::class, 'show']);
-    Route::post('/update/{id}',[ProjectController::class, 'update']);
-    Route::get('/destroy/{id}',[ProjectController::class, 'destroy']);
+
+    Route::group(['prefix'=>'project'],function($router){
+        Route::get('/',[ProjectController::class, 'index']);
+        Route::post('/store',[ProjectController::class, 'store']);
+        Route::get('/show/{id}',[ProjectController::class, 'show']);
+        Route::post('/update/{id}',[ProjectController::class, 'update']);
+        Route::get('/destroy/{id}',[ProjectController::class, 'destroy']);
+
+        Route::group(['prefix'=>'{id}/todo'],function($router){
+            Route::post('/store',[TodoController::class, 'store']);
+            Route::get('/',[TodoController::class, 'show']);
+        });
+    });
 
 });
 Route::group(['middleware' => ['jwt.role:member', 'jwt.auth'], 'prefix' => 'member'], function ($router) {

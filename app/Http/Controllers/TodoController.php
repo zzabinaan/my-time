@@ -2,151 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\todo;
+use App\Models\Todo;
+use App\Helpers\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Models\Project;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 
 class TodoController extends Controller
 {
-    protected $todo;
     public function __construct(todo $todo)
     {
-        $this->todo = $todo;
+       //load project_id from Project
+         $this->todo = $todo;
+         Config::set('auth.defaults.guard','admin-api');   
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    public function index()
+    public function store($project_id,Request $request)
     {
-        //
+        $data = $this->todo->create([
+            'project_id' => $project_id,
+            'title' => $request->title,
+            'content' => $request->content,
+            'start_at' => Carbon::now(),
+            'finish_at' => Carbon::now()->addDays(3),
+            'finished_at' => null
+        ]);
+        if($data){
+            return response()->json([
+            'message' => 'success',
+            'data' => $data ], 201);
+        }else{
+            return response()->json([
+            'message' => 'failed',], 400);
+        }
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($project_id)
     {
-        $todo = $this->todo->createTodo($request->all());
-        return response()->json($todo);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(todo $todo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-
-    public function update($id, Request $request)
-    {
-        try {
-            $todo = $this->todo->updateTodo($id, $request->all());
-            response()->json($todo);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['msg' => $exception->getMessage()], status: 404);
+        $data = Project::with('todos')->find($project_id);
+        if($data){
+            return response()->json([
+            'message' => 'success',
+            'data' => $data ], 201);
+        }else{
+            return response()->json([
+            'message' => 'failed',], 400);
         }
     }
 
-    // public function update(todo $todo, Request $request)
-    // {
-    //     $id = $todo['id'];
-    //     try {
-    //         $todo = $this->todo->updateTodo($id, $request->all());
-    //         response()->json($todo);
-    //     } catch (ModelNotFoundException $exception) {
-    //         return response()->json(['msg' => $exception->getMessage()], status: 404);
-    //     }
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-
-    // public function get(todo $todo)
-    // {
-    //     $id = $todo['id'];
-    //     $todo = $this->todo->getTodo($id);
-    //     if ($todo) {
-    //         return response()->json($todo);
-    //     } else {
-    //         return response()->json(['msg' => "item not found"], status: 404);
-    //     }
-    // }
-
-    public function get($id)
-    {
-        $todo = $this->todo->getTodo($id);
-        if ($todo) {
-            return response()->json($todo);
-        } else {
-            return response()->json(['msg' => "item not found"], status: 404);
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-
-    public function gets()
-    {
-        $todo = $this->todo->getAllTodo();
-        return response()->json($todo);
-    }
-
-    // public function delete(todo $todo)
-    // {
-    //     $id = $todo['id'];
-    //     try {
-    //         $todo = $this->todo->deleteTodo($id);
-    //         response()->json($todo);
-    //     } catch (ModelNotFoundException $exception) {
-    //         return response()->json(['msg' => $exception->getMessage()], status: 404);
-    //     }
-    // }
-    public function delete($id)
-    {
-        // $id = $todo['id'];
-        try {
-            $todo = $this->todo->deleteTodo($id);
-            response()->json($todo);
-            return $todo;
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['msg' => $exception->getMessage()], status: 404);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(todo $todo)
-    {
-    }
 }
