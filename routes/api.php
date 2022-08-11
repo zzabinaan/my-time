@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\TodoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,24 +21,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix'=>'admin'], function($router){
-    Route::post('/login',[AdminController::class,'login']);
-    Route::post('/register',[AdminController::class,'register']);
+Route::group(['prefix' => 'admin'], function ($router) {
+    Route::post('/login', [AdminController::class, 'login']);
+    Route::post('/register', [AdminController::class, 'register']);
 });
-Route::group(['prefix'=>'member'], function($router){
-    Route::post('/login',[MemberController::class,'login']);
-    Route::post('/register',[MemberController::class,'register']);
+Route::group(['prefix' => 'member'], function ($router) {
+    Route::post('/login', [MemberController::class, 'login']);
+    Route::post('/register', [MemberController::class, 'register']);
 });
-Route::group(['middleware'=>['jwt.role:admin','jwt.auth'],'prefix'=>'admin'], function($router){
-    Route::get('/profile',[AdminController::class,'userProfile']);
-    Route::post('/logout',[AdminController::class,'logout']);
+Route::group(['middleware' => ['jwt.role:admin', 'jwt.auth'], 'prefix' => 'admin'], function ($router) {
+    Route::get('/profile', [AdminController::class, 'userProfile']);
+    Route::post('/logout', [AdminController::class, 'logout']);
 });
-Route::group(['middleware'=>['jwt.role:member','jwt.auth'],'prefix'=>'member'], function($router){
-    Route::get('/profile',[MemberController::class,'userProfile']);
-    Route::post('/logout',[MemberController::class,'logout']);
+Route::group(['middleware' => ['jwt.role:member', 'jwt.auth'], 'prefix' => 'member'], function ($router) {
+    Route::get('/profile', [MemberController::class, 'userProfile']);
+    Route::post('/logout', [MemberController::class, 'logout']);
 });
-
-
 
 // Register Admin Input Example:
 // {
@@ -53,4 +52,10 @@ Route::group(['middleware'=>['jwt.role:member','jwt.auth'],'prefix'=>'member'], 
 //     "password":"12345678"
 // }
 
-// Admin and Member Input Sama kok
+Route::group(["prefix" => "todo"], function () {
+    Route::get('/get/{id}', [todoController::class, 'get']);
+    Route::get('/gets', [todoController::class, 'gets']);
+    Route::post('/store', [todoController::class, 'store']);
+    Route::post('/update/{id}', [todoController::class, 'update']);
+    Route::delete('/delete/{id}', [todoController::class, 'delete']);
+});

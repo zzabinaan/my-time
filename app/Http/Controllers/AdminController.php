@@ -6,13 +6,15 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Admin;
 use Validator;
+
 class AdminController extends Controller
 {
     //
     public function __construct()
     {
-        \Config::set('auth.defaults.guard','admin-api');
+        \Config::set('auth.defaults.guard', 'admin-api');
     }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
