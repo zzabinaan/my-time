@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Member;
 use Validator;
+
+
 class MemberController extends Controller
 {
     //
     public function __construct()
     {
-        \Config::set('auth.defaults.guard','member-api');
+        \Config::set('auth.defaults.guard', 'member-api');
     }
     public function login(Request $request)
     {
@@ -22,7 +24,7 @@ class MemberController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        if (! $token = auth()->attempt($validator->validated())) {
+        if (!$token = auth()->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
